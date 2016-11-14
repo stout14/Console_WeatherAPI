@@ -9,53 +9,22 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Net.Http;
 
-namespace Demo_WebAPI
+namespace Demo_WebAPI_Weather
 {
     class Program
     {
         static void Main(string[] args)
         {
-            DisplayCurrentWeather();
-
-            Console.ReadKey();
+            DisplayOpeningScreen();
+            DisplayMenu();
+            DisplayClosingScreen();
         }
 
-        static async void DisplayCurrentWeather()
-        {
-            string url;
-            WeatherData currentWeather = new WeatherData();
-            double lat = 45.00;
-            double lon = 85.00;
-
-            url = String.Format($"http://api.openweathermap.org/data/2.5/weather?lat=45&lon=85&appid=864d252afc928abff4010abe732617a1");
-
-            Task<WeatherData> getCurrentWeather = HttpGetCurrentWeatherByLatLon(url);
-
-            currentWeather = await getCurrentWeather;
-
-            Console.WriteLine(currentWeather.main.temp);
-        }
-
-        static async Task<WeatherData> HttpGetCurrentWeatherByLatLon(string url)
-        {
-            string result = null;
-
-            using (HttpClient syncClient = new HttpClient())
-            {
-                var response = await syncClient.GetAsync(url);
-                result = await response.Content.ReadAsStringAsync();
-            }
-
-            WeatherData currentWeather = JsonConvert.DeserializeObject<WeatherData>(result);
-
-            Console.WriteLine(result);
-
-            return currentWeather;
-        }
 
         static void DisplayMenu()
         {
             bool quit = false;
+            LocationCoordinates coordinates = new LocationCoordinates(0, 0);
 
             while (!quit)
             {
@@ -73,11 +42,11 @@ namespace Demo_WebAPI
                 switch (userMenuChoice)
                 {
                     case "1":
-                        DisplayGetLocation();
+                        coordinates = DisplayGetLocation();
                         break;
 
                     case "2":
-                        DisplayTheCurrentWeather();
+                        DisplayCurrentWeather(coordinates);
                         break;
 
                     case "3":
@@ -150,11 +119,56 @@ namespace Demo_WebAPI
             Console.WriteLine();
         }
 
-        static void DisplayGetLocation()
+        static LocationCoordinates DisplayGetLocation()
         {
             DisplayHeader("Set Location by Coordinates");
 
+            LocationCoordinates coordinates = new LocationCoordinates(45, 85);
 
+            DisplayContinuePrompt();
+
+            return coordinates;
+        }
+
+
+        static async Task<WeatherData> GetCurrentWeatherData(LocationCoordinates coordinates)
+        {
+            string url;
+            WeatherData currentWeather = new WeatherData();
+
+            url = "http://api.openweathermap.org/data/2.5/weather?lat=45&lon=85&appid=864d252afc928abff4010abe732617a1";
+
+            Task<WeatherData> getCurrentWeather = HttpGetCurrentWeatherByLocation(url);
+ 
+            currentWeather = await getCurrentWeather;
+
+            return currentWeather;
+        }
+
+        static async Task<WeatherData> HttpGetCurrentWeatherByLocation(string url)
+        {
+            string result = null;
+
+            using (HttpClient syncClient = new HttpClient())
+            {
+                var response = await syncClient.GetAsync(url);
+                result = await response.Content.ReadAsStringAsync();
+            }
+
+            Console.WriteLine(result);
+
+            WeatherData currentWeather = JsonConvert.DeserializeObject<WeatherData>(result);
+
+            return currentWeather;
+        }
+
+        static async void DisplayCurrentWeather(LocationCoordinates coordinates)
+        {
+            DisplayHeader("Current Weather");
+
+            WeatherData currentWeatherData = await GetCurrentWeatherData(coordinates);
+            
+            Console.WriteLine(currentWeatherData.main.temp);
 
             DisplayContinuePrompt();
         }

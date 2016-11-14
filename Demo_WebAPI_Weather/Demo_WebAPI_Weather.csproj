@@ -7,8 +7,8 @@
     <ProjectGuid>{B7E75AED-5B96-4DB8-BF2C-1E782816AA5A}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Demo_WebAPI</RootNamespace>
-    <AssemblyName>Demo_WebAPI</AssemblyName>
+    <RootNamespace>Demo_WebAPI_Weather</RootNamespace>
+    <AssemblyName>Demo_WebAPI_Weather</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Demo_WebAPI
+namespace Demo_WebAPI_Weather
 {
     public class WeatherData
     {
