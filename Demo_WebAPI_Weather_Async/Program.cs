@@ -73,6 +73,8 @@ namespace Demo_WebAPI_Weather
             Console.WriteLine();
             Console.WriteLine();
 
+            Console.WriteLine("This application uses the Web API for OpenWeatherMap.");
+
             DisplayContinuePrompt();
         }
 
@@ -157,7 +159,13 @@ namespace Demo_WebAPI_Weather
             WeatherData currentWeather = new WeatherData();
 
             Task<WeatherData> getCurrentWeather = HttpGetCurrentWeatherByLocation(url);
- 
+
+            //
+            // Note: This is only used to demonstrate quickly in the console.
+            //       Do not use.
+            //
+            getCurrentWeather.Wait();
+
             currentWeather = await getCurrentWeather;
 
             return currentWeather;
@@ -180,15 +188,20 @@ namespace Demo_WebAPI_Weather
             return currentWeather;
         }
 
-        static async void DisplayCurrentWeather(LocationCoordinates coordinates)
+        static async Task DisplayCurrentWeather(LocationCoordinates coordinates)
         {
             DisplayHeader("Current Weather");
 
             WeatherData currentWeatherData = await GetCurrentWeatherData(coordinates);
             
-            Console.WriteLine(currentWeatherData.main.temp);
+            Console.WriteLine(String.Format("{0:0.0}", ConvertToFahrenheit(currentWeatherData.main.temp)));
 
             DisplayContinuePrompt();
+        }
+
+        static double ConvertToFahrenheit(double degreesKalvin)
+        {
+            return (degreesKalvin - 273.15) * 1.8 + 32;
         }
     }
 }
