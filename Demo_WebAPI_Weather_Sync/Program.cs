@@ -20,7 +20,6 @@ namespace Demo_WebAPI_Weather
             DisplayClosingScreen();
         }
 
-
         static void DisplayMenu()
         {
             bool quit = false;
@@ -59,7 +58,6 @@ namespace Demo_WebAPI_Weather
                 }
             }
         }
-
 
         static void DisplayOpeningScreen()
         {
@@ -132,7 +130,7 @@ namespace Demo_WebAPI_Weather
             coordinates.Longitude = double.Parse(Console.ReadLine());
 
             Console.WriteLine();
-            Console.WriteLine($"Location Coordinates: ({coordinates.Longitude}, {coordinates.Longitude})");
+            Console.WriteLine($"Location Coordinates: ({coordinates.Latitude}, {coordinates.Longitude})");
             Console.WriteLine();
 
             DisplayContinuePrompt();
@@ -140,8 +138,7 @@ namespace Demo_WebAPI_Weather
             return coordinates;
         }
 
-
-        static async Task<WeatherData> GetCurrentWeatherData(LocationCoordinates coordinates)
+        static WeatherData GetCurrentWeatherData(LocationCoordinates coordinates)
         {
             string url;
 
@@ -155,22 +152,19 @@ namespace Demo_WebAPI_Weather
             url = sb.ToString();
 
             WeatherData currentWeather = new WeatherData();
-
-            Task<WeatherData> getCurrentWeather = HttpGetCurrentWeatherByLocation(url);
  
-            currentWeather = await getCurrentWeather;
+            currentWeather = HttpGetCurrentWeatherByLocation(url);
 
             return currentWeather;
         }
 
-        static async Task<WeatherData> HttpGetCurrentWeatherByLocation(string url)
+        static WeatherData HttpGetCurrentWeatherByLocation(string url)
         {
             string result = null;
 
-            using (HttpClient syncClient = new HttpClient())
+            using (WebClient syncClient = new WebClient())
             {
-                var response = await syncClient.GetAsync(url);
-                result = await response.Content.ReadAsStringAsync();
+                result = syncClient.DownloadString(url);
             }
 
             //Console.WriteLine(result);
@@ -180,15 +174,20 @@ namespace Demo_WebAPI_Weather
             return currentWeather;
         }
 
-        static async void DisplayCurrentWeather(LocationCoordinates coordinates)
+        static void DisplayCurrentWeather(LocationCoordinates coordinates)
         {
             DisplayHeader("Current Weather");
 
-            WeatherData currentWeatherData = await GetCurrentWeatherData(coordinates);
+            WeatherData currentWeatherData = GetCurrentWeatherData(coordinates);
             
-            Console.WriteLine(currentWeatherData.main.temp);
+            Console.WriteLine(String.Format("Temperature (Fahrenheit): {0:0.0}", ConvertToFahrenheit(currentWeatherData.Main.Temp)));
 
             DisplayContinuePrompt();
+        }
+
+        static double ConvertToFahrenheit(double degreesKalvin)
+        {
+            return (degreesKalvin - 273.15) * 1.8 + 32;
         }
     }
 }

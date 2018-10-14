@@ -46,7 +46,7 @@ namespace Demo_WebAPI_Weather
                         break;
 
                     case "2":
-                        DisplayCurrentWeather(coordinates);
+                        DisplayCurrentWeatherAsync(coordinates);
                         break;
 
                     case "3":
@@ -134,7 +134,7 @@ namespace Demo_WebAPI_Weather
             coordinates.Longitude = double.Parse(Console.ReadLine());
 
             Console.WriteLine();
-            Console.WriteLine($"Location Coordinates: ({coordinates.Longitude}, {coordinates.Longitude})");
+            Console.WriteLine($"Location Coordinates: ({coordinates.Latitude}, {coordinates.Longitude})");
             Console.WriteLine();
 
             DisplayContinuePrompt();
@@ -143,7 +143,7 @@ namespace Demo_WebAPI_Weather
         }
 
 
-        static async Task<WeatherData> GetCurrentWeatherData(LocationCoordinates coordinates)
+        static async Task<WeatherData> GetCurrentWeatherDataAsync(LocationCoordinates coordinates)
         {
             string url;
 
@@ -158,11 +158,12 @@ namespace Demo_WebAPI_Weather
 
             WeatherData currentWeather = new WeatherData();
 
-            Task<WeatherData> getCurrentWeather = HttpGetCurrentWeatherByLocation(url);
+            Task<WeatherData> getCurrentWeather = HttpGetCurrentWeatherByLocationAsync(url);
 
             //
-            // Note: This is only used to demonstrate quickly in the console.
-            //       Do not use.
+            // Note: The Wait() method is necessary so that the app does not proceed
+            //       to the menu before returning the weather data. If there is an issue
+            //       returning the data, the Wait() will create a deadlock in the app flow.
             //
             getCurrentWeather.Wait();
 
@@ -171,7 +172,7 @@ namespace Demo_WebAPI_Weather
             return currentWeather;
         }
 
-        static async Task<WeatherData> HttpGetCurrentWeatherByLocation(string url)
+        static async Task<WeatherData> HttpGetCurrentWeatherByLocationAsync(string url)
         {
             string result = null;
 
@@ -188,13 +189,15 @@ namespace Demo_WebAPI_Weather
             return currentWeather;
         }
 
-        static async Task DisplayCurrentWeather(LocationCoordinates coordinates)
+        static async Task DisplayCurrentWeatherAsync(LocationCoordinates coordinates)
         {
+            Console.Clear();
+
             DisplayHeader("Current Weather");
 
-            WeatherData currentWeatherData = await GetCurrentWeatherData(coordinates);
+            WeatherData currentWeatherData = await GetCurrentWeatherDataAsync(coordinates);
             
-            Console.WriteLine(String.Format("{0:0.0}", ConvertToFahrenheit(currentWeatherData.main.temp)));
+            Console.WriteLine(String.Format("Temperature (Fahrenheit): {0:0.0}", ConvertToFahrenheit(currentWeatherData.Main.Temp)));
 
             DisplayContinuePrompt();
         }
