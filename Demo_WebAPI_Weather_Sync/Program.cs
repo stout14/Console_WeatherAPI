@@ -147,7 +147,7 @@ namespace Demo_WebAPI_Weather
             sb.Append("http://api.openweathermap.org/data/2.5/weather?");
             sb.Append("&lat=" + coordinates.Latitude.ToString());
             sb.Append("&lon=" + coordinates.Longitude.ToString());
-            sb.Append("&appid=864d252afc928abff4010abe732617a1");
+            sb.Append("&appid=ced49f1da836939588cc0f1f77d39529");
 
             url = sb.ToString();
 

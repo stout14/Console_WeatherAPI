@@ -24,7 +24,7 @@ namespace Demo_WebAPI_Weather
         static void DisplayMenu()
         {
             bool quit = false;
-            LocationCoordinates coordinates = new LocationCoordinates(0, 0);
+            LocationCoordinates coordinates = new LocationCoordinates(0);
 
             while (!quit)
             {
@@ -123,18 +123,18 @@ namespace Demo_WebAPI_Weather
 
         static LocationCoordinates DisplayGetLocation()
         {
-            DisplayHeader("Set Location by Coordinates");
+            //DisplayHeader("Set Location by Coordinates");
 
             LocationCoordinates coordinates = new LocationCoordinates();
 
-            Console.Write("Enter Latitude: ");
-            coordinates.Latitude = double.Parse(Console.ReadLine());
+            Console.Write("Enter ZipCode: ");
+            coordinates.Zip = int.Parse(Console.ReadLine());
 
-            Console.Write("Enter longitude: ");
-            coordinates.Longitude = double.Parse(Console.ReadLine());
+            //Console.Write("Enter longitude: ");
+            //coordinates.Longitude = double.Parse(Console.ReadLine());
 
             Console.WriteLine();
-            Console.WriteLine($"Location Coordinates: ({coordinates.Latitude}, {coordinates.Longitude})");
+            Console.WriteLine($"ZipCode: ({coordinates.Zip})");
             Console.WriteLine();
 
             DisplayContinuePrompt();
@@ -150,9 +150,9 @@ namespace Demo_WebAPI_Weather
             StringBuilder sb = new StringBuilder();
             sb.Clear();
             sb.Append("http://api.openweathermap.org/data/2.5/weather?");
-            sb.Append("&lat=" + coordinates.Latitude.ToString());
-            sb.Append("&lon=" + coordinates.Longitude.ToString());
-            sb.Append("&appid=864d252afc928abff4010abe732617a1");
+            sb.Append("&zip=" + coordinates.Zip.ToString());
+
+            sb.Append("&appid=ced49f1da836939588cc0f1f77d39529");
 
             url = sb.ToString();
 
@@ -198,6 +198,9 @@ namespace Demo_WebAPI_Weather
             WeatherData currentWeatherData = await GetCurrentWeatherDataAsync(coordinates);
             
             Console.WriteLine(String.Format("Temperature (Fahrenheit): {0:0.0}", ConvertToFahrenheit(currentWeatherData.Main.Temp)));
+            Console.WriteLine("Name: " + currentWeatherData.Name);
+            Console.WriteLine("Visibility: " + currentWeatherData.Visibility);
+            Console.WriteLine("Clouds: " + currentWeatherData.Clouds);
 
             DisplayContinuePrompt();
         }

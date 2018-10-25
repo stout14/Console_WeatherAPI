@@ -8,13 +8,15 @@ namespace Demo_WebAPI_Weather
 {
     public struct LocationCoordinates
     {
-        public double Latitude { get; set; }
-        public double Longitude { get; set; }
+        //public double Latitude { get; set; }
+        //public double Longitude { get; set; }
+        public int Zip{get; set;}
 
-        public LocationCoordinates(double latitude, double longitude)
+        public LocationCoordinates(int zip) //double latitude, double longitude)
         {
-            this.Latitude = latitude;
-            this.Longitude = longitude;
+            this.Zip = zip;
+            //this.Latitude = latitude;
+            //this.Longitude = longitude;
         }
     }
 }
